@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    {{ entry.title }}
+{% endblock title %}
+
+{% block content_title %}
+    {{ entry.title }}
+{% endblock content_title %}
+
+{% block sidebar %}
+    <nav class="nav list-group flex-column">
+        <h4>Тэги</h4>
+        {% for tag in entry.tags %}
+            <a class="list-group-item nav-link" 
+                href="{{ url_for('entries.tag_detail', slug=tag.slug)}}">
+                {{ tag.name }}
+            </a> 
+        {% endfor %}
+    </nav>
+    <p>Опубликовано {{ entry.created_timestamp.strftime('%m/%d/%Y')}}</p>
+{% endblock sidebar %}
+
+{% block content %}
+    {{ rendered_data }}    
+{% endblock content %}
