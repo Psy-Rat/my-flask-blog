@@ -9,6 +9,7 @@
 {% endblock content_title %}
 
 {% block sidebar %}
+    {{ scrollspy | safe}}
     <nav class="nav list-group flex-column">
         <h4>Тэги</h4>
         {% for tag in entry.tags %}
@@ -22,5 +23,7 @@
 {% endblock sidebar %}
 
 {% block content %}
-    {{ rendered_data }}    
+    <div data-spy="scroll" data-target="#navbar-scrollspy" data-offset="0">
+    {{ rendered_data }}
+    </div>    
 {% endblock content %}

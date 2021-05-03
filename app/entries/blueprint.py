@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template
-from helpers import render_paginated, markdown
+from helpers import render_paginated, markdown, get_anchors, parse_anchors_as_bootstrap
 from models import Entry, Tag
 
 entries = Blueprint(
@@ -29,5 +29,9 @@ def tag_detail(slug):
 @entries.route('/<slug>/')
 def detail(slug):
     entry = Entry.query.filter(Entry.slug == slug).first_or_404()
-    main_data = markdown(entry.body, math=True, fenced_code=True)
-    return render_template('entries/detail.html', entry=entry, rendered_data=main_data)
+    anchors = get_anchors(entry.body)
+    main_data = markdown(
+        entry.body, anchors, math=True, fenced_code=True)
+    anch = parse_anchors_as_bootstrap(
+        anchors)
+    return render_template('entries/detail.html', entry=entry, rendered_data=main_data, scrollspy=anch)
