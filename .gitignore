@@ -2,6 +2,9 @@
 .ipynb_checkpoints/
 static/
 
+#testing stuff
+*.test.txt
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
