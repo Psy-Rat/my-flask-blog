@@ -25,6 +25,7 @@ $(function(){
 
 $(function(){
   $('.entity-header').mouseover(function () { 
+    $(this).children(".inline-anchor:first").stop()
     $(this).children(".inline-anchor:first").animate({
       opacity: 1.,
     }, 300, function(){});
@@ -34,8 +35,9 @@ $(function(){
 
 $(function(){
   $('.entity-header').mouseleave(function () { 
+    $(this).children(".inline-anchor:first").stop()
     $(this).children(".inline-anchor:first").animate({
-      opacity: .1,
+      opacity: .5,
     }, 300, function(){});
   });
 });

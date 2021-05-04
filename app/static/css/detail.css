@@ -68,7 +68,7 @@
 .inline-anchor {
   display: inline-block;
   width: 20px;
-  opacity: 0.1;
+  opacity: 0.5;
 }
 
 .entity-header a {
