@@ -17,5 +17,6 @@
 <li>- [ ] entry_to_pdf  </li>
 <li>- [x] anchors on headers   </li>
 <li>- [x] search   </li>
+<li>- [ ] Elasticsearch   </li>
 <!-- <li>- [ ]  </li> -->
 </ul>

@@ -69,6 +69,11 @@
   display: inline-block;
   width: 20px;
   opacity: 0.5;
+
+  -moz-user-select: none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 .entity-header a {
