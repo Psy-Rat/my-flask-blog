@@ -16,5 +16,6 @@
 <li>- [ ] microblog </li>
 <li>- [ ] entry_to_pdf  </li>
 <li>- [x] anchors on headers   </li>
+<li>- [x] search   </li>
 <!-- <li>- [ ]  </li> -->
 </ul>

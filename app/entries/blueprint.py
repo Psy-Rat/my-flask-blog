@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template
-from helpers import render_paginated, markdown, get_anchors, parse_anchors_as_bootstrap
+from helpers import entry_list_search, render_paginated, markdown, get_anchors, parse_anchors_as_bootstrap
 from models import Entry, Tag
 
 entries = Blueprint(
@@ -12,7 +12,7 @@ entries = Blueprint(
 def index():
     entries = Entry.query.order_by(Entry.created_timestamp.desc())
     print(entries)
-    return render_paginated('entries/index.html', entries)
+    return entry_list_search('entries/index.html', entries)
 
 
 @entries.route('/tags/')

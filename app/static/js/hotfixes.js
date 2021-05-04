@@ -32,7 +32,6 @@ $(function(){
   });
 });
 
-
 $(function(){
   $('.entity-header').mouseleave(function () { 
     $(this).children(".inline-anchor:first").stop()

@@ -12,6 +12,8 @@ import flask_misaka
 from copy import deepcopy
 import re
 
+from models import Entry
+
 
 def render_paginated(template_name, query, paginate_by=20, **context):
     '''
@@ -243,3 +245,11 @@ def get_anchors(text):
 
 def parse_anchors_as_bootstrap(anchors):
     return had_parser.parse(anchors)
+
+
+def entry_list_search(template, query, **context):
+    search = request.args.get('q')
+    if search:
+        query = query.filter(
+            (Entry.body.contains(search)) | (Entry.title.contains(search)))
+    return render_paginated(template, query, **context)
