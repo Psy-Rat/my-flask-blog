@@ -1,0 +1,66 @@
+.sidebar {
+  top: 80px;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  scrollbar-width: none;
+}
+
+#navbar-scrollspy .nav-link.active {
+  color: #000;
+  background-color: #b6dd77;
+  font-weight: bold;
+}
+
+#navbar-scrollspy .nav-link {
+  color: #666;
+}
+
+#tag-info {
+  height: 20vh;
+  max-height: 100px;
+}
+
+#toc-info {
+  height: 60vh;
+}
+
+#navbar-scrollspy {
+  position: absolute;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  scrollbar-width: none;
+  width: 95%;
+}
+
+#navbar-scrollspy::-webkit-scrollbar {
+  display: none;
+}
+
+#navbar-scrollspy a {
+  border-bottom: dotted 1px #333333;
+  border-radius: 0%;
+  overflow-x: hidden;
+}
+
+#navbar-scrollspy a:last-child {
+  border-bottom: solid 3px #333333;
+}
+
+#navbar-scrollspy .pl-0 {
+  border-left: solid 1px #333333;
+}
+#navbar-scrollspy .pl-1 {
+  border-left: solid 5px #333333;
+}
+#navbar-scrollspy .pl-2 {
+  border-left: solid 10px #333333;
+}
+#navbar-scrollspy .pl-3 {
+  border-left: solid 15px #333333;
+}
+#navbar-scrollspy .pl-5 {
+  border-left: solid 20px #333333;
+}
+#navbar-scrollspy .pl-6 {
+  border-left: solid 25px #333333;
+}

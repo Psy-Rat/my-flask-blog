@@ -170,11 +170,11 @@ class HeaderAnchorBootstrapRenderer:
 
     NAVb = "<nav class=\"nav nav-pills flex-column\">"
     NAVe = "</nav>"
-    MARGIN_CLASS = "ml-"
-    LINK_CLASS = "nav-link"
+    MARGIN_CLASS = "pl-"
+    LINK_CLASS = "nav-link softscroll"
 
     def construct_nav(self, id):
-        return f"<nav id=\"{id}\" class=\"navbar navbar-light bg-light\">"
+        return f"<nav id=\"{id}\" class=\"container\">"
 
     def construct_link(self, level, href, content):
         LINK_BEG = f"<a class=\"{self.LINK_CLASS} {self.MARGIN_CLASS}{level}\" "
@@ -211,6 +211,8 @@ class HeaderAnchorBootstrapRenderer:
 
         had_gen = had_container.generator_forward(relative=True)
         print(had_gen)
+
+        # start_nav()
 
         for had in had_gen:
             while curr_level < had.level:

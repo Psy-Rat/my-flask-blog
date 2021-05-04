@@ -4,13 +4,36 @@
     {{ entry.title }}
 {% endblock title %}
 
+{% block extra_styles %}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/detail.css') }}">
+{% endblock %}
+
+{% block extra_scripts %}
+    <script src="{{ url_for('static', filename='js/hotfixes.js') }}"></script>
+{% endblock %}
+
 {% block content_title %}
     {{ entry.title }}
 {% endblock content_title %}
 
 {% block sidebar %}
-    {{ scrollspy | safe}}
-    <nav class="nav list-group flex-column">
+    <nav id = "tag-info" class = "container-fluid">
+    <h4>Тэги</h4>
+    {% for tag in entry.tags %}
+        <a class="badge badge-secondary" 
+            href="{{ url_for('entries.tag_detail', slug=tag.slug)}}">
+        {{ tag.name }}
+        </a> 
+    {% endfor %}
+    <p>Опубликовано {{ entry.created_timestamp.strftime('%m/%d/%Y')}}</p>
+    </nav>
+    <div id = "toc-info" class = "container-fluid">
+        <h4>Оглавление</h4>
+        <nav id = "navbar-scrollspy">
+            {{ scrollspy | safe}}
+        </nav>
+    </div>
+    <!-- <nav class="nav list-group flex-column">
         <h4>Тэги</h4>
         {% for tag in entry.tags %}
             <a class="list-group-item nav-link" 
@@ -18,12 +41,9 @@
                 {{ tag.name }}
             </a> 
         {% endfor %}
-    </nav>
-    <p>Опубликовано {{ entry.created_timestamp.strftime('%m/%d/%Y')}}</p>
+    </nav> -->
 {% endblock sidebar %}
 
 {% block content %}
-    <div data-spy="scroll" data-target="#navbar-scrollspy" data-offset="0">
     {{ rendered_data }}
-    </div>    
 {% endblock content %}
