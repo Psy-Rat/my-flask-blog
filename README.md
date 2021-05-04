@@ -15,6 +15,6 @@
 <li>- [ ] contacts </li>
 <li>- [ ] microblog </li>
 <li>- [ ] entry_to_pdf  </li>
-<li>- [ ] anchors on headers   </li>
+<li>- [x] anchors on headers   </li>
 <!-- <li>- [ ]  </li> -->
 </ul>
