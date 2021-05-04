@@ -34,6 +34,7 @@ def render_paginated(template_name, query, paginate_by=20, **context):
 
 
 class HighlighterRenderer(m.HtmlRenderer):
+
     def __init__(self, *args, **kwargs):
         self.had_gen = []
         self.formatter = HtmlFormatter(
@@ -49,7 +50,7 @@ class HighlighterRenderer(m.HtmlRenderer):
         return f"<style type=\"text/css\">{self.formatter.get_style_defs()}</style>"
 
     def blockcode(self, text, lang):
-        print(lang)
+        # print(lang)
         try:
             lexer = get_lexer_by_name(lang, stripall=False)
         except ClassNotFound:
@@ -59,15 +60,17 @@ class HighlighterRenderer(m.HtmlRenderer):
             # style_defs = formatter.get_style_defs()
             return f"{highlight(text, lexer, self.formatter)}\n"
         # default
-        print("USES DEFAULT LEXER")
+        # print("USES DEFAULT LEXER")
         return f"\n<div class=\"code-block-{lang}\"><pre><code>{h.escape_html(text)}</code></pre></div>\n"
 
     def header(self, content, level):
         if len(self.had_gen) > 0:
-            print("AHAHAHAHAH")
-            return f"<h{level} id=\"{self.had_gen.pop().slug}\">{content}</h{level}>"
+            # print("AHAHAHAHAH")
+            id_ref = self.had_gen.pop().slug
+            link = f"<a class = \"inline-anchor\" href=\"#{id_ref}\"><i>&para;</i></a>"
+            return f"<h{level} id=\"{id_ref}\" class = \"entity-header\">{link}{content}</h{level}>"
         else:
-            return f"<h{level}>{content}</h{level}>"
+            return f"<h{level} class = \"entity-header\">{content}</h{level}>"
 
 
 renderer = HighlighterRenderer()

@@ -34,15 +34,24 @@
                         aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                
+
                 <div class="collapse navbar-collapse"  id="navbarNav">
                     <div class="navbar-nav">
                             <a class="nav-item nav-link active" href="{{ url_for('homepage') }}">Home</a>
                             <a class="nav-item nav-link active" href="{{ url_for('entries.index') }}">Blog</a>
                     {% block extra_nav %}{% endblock %}
                     </div>
+                    <div class="navbar-nav ml-md-auto d-md-flex" method="get" role="form">
+                        <form class="form-inline my-2 my-lg-0">
+                            <input class="form-control mr-sm-3" type="search" placeholder="Search" aria-label="Search" name="q" value="{{ request.args.get('q', '') }}">
+                            <button class="btn btn-outline-warning my-2 my-sm-0" type="submit">Search</button>
+                        </form>
+                    </div>
+
                 </div>
                 
+                
+
             </nav>
         </div>
     </header>

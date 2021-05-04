@@ -17,13 +17,15 @@ def index():
 
 @entries.route('/tags/')
 def tag_index():
-    pass
+    tags = Tag.query.order_by(Tag.name)
+    return render_paginated('entries/index_tag.html', tags)
 
 
 @entries.route('/tags/<slug>/')
 def tag_detail(slug):
-    tag = Tag.query.filter(Tag)
-    pass
+    tag = Tag.query.filter(Tag.slug == slug).first_or_404()
+    entries = tag.entries.order_by(Entry.created_timestamp.desc())
+    return render_paginated('entries/detail_tag.html', entries, tag=tag)
 
 
 @entries.route('/<slug>/')

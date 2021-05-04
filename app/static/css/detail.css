@@ -7,7 +7,7 @@
 
 #navbar-scrollspy .nav-link.active {
   color: #000;
-  background-color: #b6dd77;
+  background-color: yellowgreen;
   font-weight: bold;
 }
 
@@ -63,4 +63,24 @@
 }
 #navbar-scrollspy .pl-6 {
   border-left: solid 25px #333333;
+}
+
+.inline-anchor {
+  display: inline-block;
+  width: 20px;
+  opacity: 0.1;
+}
+
+.entity-header a {
+  color: yellowgreen;
+}
+
+.entity-header a:hover {
+  color: black;
+  background-color: yellowgreen;
+}
+
+.entity-header {
+  padding-top: 60px;
+  margin-top: -60px;
 }

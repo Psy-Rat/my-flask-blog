@@ -19,3 +19,22 @@ $(function(){
       });
     });
 });
+
+$(function(){
+  $('.entity-header').mouseover(function () { 
+    $(this).children(".inline-anchor:first").animate({
+      opacity: 1.,
+    }, 300, function(){});
+  });
+});
+
+
+$(function(){
+  $('.entity-header').mouseleave(function () { 
+    $(this).children(".inline-anchor:first").animate({
+      opacity: .1,
+    }, 300, function(){});
+  });
+});
+
+
