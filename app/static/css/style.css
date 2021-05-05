@@ -31,3 +31,10 @@ main {
 pre {
   line-height: 125%;
 }
+
+.page-item.active .page-link {
+  color: black;
+  background-color: yellowgreen;
+  border-color: yellowgreen;
+  font-weight: bold;
+}

@@ -15,7 +15,7 @@ import re
 from models import Entry
 
 
-def render_paginated(template_name, query, paginate_by=20, **context):
+def render_paginated(template_name, query, paginate_by=10, **context):
     '''
         Paginate query by flask. Returns rendered template with items after pagination.
 
