@@ -93,3 +93,8 @@ def detail(slug):
     anch = parse_anchors_as_bootstrap(
         anchors)
     return render_template('entries/detail.html', entry=entry, rendered_data=main_data, scrollspy=anch)
+
+
+@entries.route('/<slug>/edit', methods=['GET', 'POST'])
+def edit(slug):
+    return pass
