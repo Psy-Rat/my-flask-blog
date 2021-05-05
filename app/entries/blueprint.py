@@ -2,7 +2,7 @@ from flask import Blueprint, render_template
 from helpers import entry_list_search, markdown, get_anchors, parse_anchors_as_bootstrap
 from models import Entry, Tag
 from collections import namedtuple
-
+from entries.forms import EntryForm
 
 DummyTag = namedtuple("DummyTag", ["name"])
 
@@ -59,6 +59,12 @@ def tag_detail(slug):
         return single_tag_search(slug)
     else:
         return multiple_tag_search(slug_list)
+
+
+@entries.route('/create/')
+def create():
+    form = EntryForm()
+    return render_template('entries/create.html', form=form)
 
 
 @entries.route('/<slug>/')

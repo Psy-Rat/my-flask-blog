@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Создание новой статьи    
+{% endblock title %}
+
+{% block content_title %}
+    Создание новой статьи
+{% endblock content_title %}
+
+{% block content %}
+    <form action="{{ url_for('entries.create') }}"  method="post">
+        {% for field in form %}
+        <div class="form-group row">
+            {{ field.label(class='col-sm-3 control-label') }}
+            <div class="col-sm-9">
+                {{ field(class='form-control') }}
+            </div>
+        </div>            
+        {% endfor %}
+
+        <div class="form-group">
+          <div class="col-sm-offset-3 col-sm-9">
+            <button type="submit" class="btn btn-primary">Создать</button>
+            <a class="btn" href="{{url_for('entries.index') }}">Отмена</a>
+          </div>
+        </div>
+    </form>    
+{% endblock content %}
