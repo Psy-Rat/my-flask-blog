@@ -251,5 +251,8 @@ def entry_list_search(template, query, **context):
     search = request.args.get('q')
     if search:
         query = query.filter(
-            (Entry.body.contains(search)) | (Entry.title.contains(search)))
+            (Entry.body.contains(search)) | (Entry.title.contains(search)) | (Entry.status == Entry.STATUS_PUBLIC))
+    else:
+        query = query.filter(
+            (Entry.status == Entry.STATUS_PUBLIC))
     return render_paginated(template, query, **context)

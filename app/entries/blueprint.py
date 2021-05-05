@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template
-from helpers import entry_list_search, render_paginated, markdown, get_anchors, parse_anchors_as_bootstrap
+from helpers import entry_list_search, markdown, get_anchors, parse_anchors_as_bootstrap
 from models import Entry, Tag
 
 entries = Blueprint(
@@ -18,14 +18,14 @@ def index():
 @entries.route('/tags/')
 def tag_index():
     tags = Tag.query.order_by(Tag.name)
-    return render_paginated('entries/index_tag.html', tags)
+    return entry_list_search('entries/index_tag.html', tags)
 
 
 @entries.route('/tags/<slug>/')
 def tag_detail(slug):
     tag = Tag.query.filter(Tag.slug == slug).first_or_404()
     entries = tag.entries.order_by(Entry.created_timestamp.desc())
-    return render_paginated('entries/detail_tag.html', entries, tag=tag)
+    return entry_list_search('entries/detail_tag.html', entries, tag=tag)
 
 
 @entries.route('/<slug>/')

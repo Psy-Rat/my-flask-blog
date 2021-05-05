@@ -19,7 +19,7 @@
 {% block sidebar %}
     <nav id = "tag-info" class = "container-fluid">
     <h4>Тэги</h4>
-    {% for tag in entry.tags %}
+    {% for tag in entry.tags | sort(attribute="name") %}
         <a class="badge badge-secondary" 
             href="{{ url_for('entries.tag_detail', slug=tag.slug)}}">
         {{ tag.name }}
