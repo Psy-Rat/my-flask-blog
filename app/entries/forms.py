@@ -1,10 +1,11 @@
 import wtforms
+from wtforms.validators import DataRequired
 from models import Entry
 
 
 class EntryForm(wtforms.Form):
-    title = wtforms.StringField('Название')
-    body = wtforms.TextAreaField('Контент')
+    title = wtforms.StringField('Название', validators=[DataRequired()])
+    body = wtforms.TextAreaField('Контент', validators=[DataRequired()])
     status = wtforms.SelectField(
         'Статус',
         choices=(
@@ -20,3 +21,8 @@ class EntryForm(wtforms.Form):
             (Entry.TYPE_MAJOR,  'Пост')
         ),
         coerce=int)
+
+    def save_entry(self, entry):
+        self.populate_obj(entry)
+        entry.generate_slug()
+        return entry

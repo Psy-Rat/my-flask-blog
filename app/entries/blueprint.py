@@ -1,8 +1,9 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, redirect, url_for, request
 from helpers import entry_list_search, markdown, get_anchors, parse_anchors_as_bootstrap
 from models import Entry, Tag
 from collections import namedtuple
 from entries.forms import EntryForm
+from app import db
 
 DummyTag = namedtuple("DummyTag", ["name"])
 
@@ -60,11 +61,27 @@ def tag_detail(slug):
     else:
         return multiple_tag_search(slug_list)
 
+# Creation controller
 
-@entries.route('/create/')
+
+def create_entry_post():
+    form = EntryForm(request.form)
+    if form.validate():
+        entry = form.save_entry(Entry())
+        db.session.add(entry)
+        db.session.commit()
+        return redirect(url_for('entries.detail', slug=entry.slug))
+    else:
+        return render_template('entries/create.html', form=form)
+
+
+@entries.route('/create/', methods=['GET', 'POST'])
 def create():
-    form = EntryForm()
-    return render_template('entries/create.html', form=form)
+    if request.method == 'POST':
+        return create_entry_post()
+    else:
+        form = EntryForm()
+        return render_template('entries/create.html', form=form)
 
 
 @entries.route('/<slug>/')

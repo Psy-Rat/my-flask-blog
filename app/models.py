@@ -1,6 +1,6 @@
 import datetime
 import re
-
+from transliterate import translit
 
 from app import db
 
@@ -9,7 +9,12 @@ from app import db
 # Models
 ############
 def slugify(s):
-    return re.sub('[^\w]+', '-', s).lower()
+    s = s.replace('-', '*')
+    trans_s = translit(s, reversed=True)
+    trans_s = trans_s.replace('-', '')
+    trans_s = trans_s.replace('*', '-')
+
+    return re.sub('[^\w]+', '-', trans_s).lower()
 
 
 entry_tags = db.Table('entry_tags',
