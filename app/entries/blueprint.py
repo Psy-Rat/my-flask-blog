@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, redirect, url_for, request
-from helpers import entry_list_search, markdown, get_anchors, parse_anchors_as_bootstrap
+from helpers import entry_list_search, markdown, get_anchors, parse_anchors_as_bootstrap, get_entry_or_404
 from models import Entry, Tag
 from collections import namedtuple
 from entries.forms import EntryForm
@@ -17,7 +17,6 @@ entries = Blueprint(
 @entries.route('/')
 def index():
     entries = Entry.query.order_by(Entry.created_timestamp.desc())
-    print(entries)
     return entry_list_search('entries/index.html', entries)
 
 
@@ -88,7 +87,7 @@ def create():
 
 @entries.route('/<slug>/')
 def detail(slug):
-    entry = Entry.query.filter(Entry.slug == slug).first_or_404()
+    entry = get_entry_or_404(slug)
     anchors = get_anchors(entry.body)
     main_data = markdown(
         entry.body, anchors, math=True, fenced_code=True)
@@ -99,7 +98,7 @@ def detail(slug):
 # Edit model
 
 
-def entry_edit_post_responce(entry):
+def entry_edit_post_responce(entry: Entry):
     # obj param help to autofill form from entry by comparing attributes
     form = EntryForm(request.form, obj=entry)
     if form.validate():
@@ -111,18 +110,41 @@ def entry_edit_post_responce(entry):
         return render_template('entries/edit.html', entry=entry, form=form)
 
 
-def entry_edit_get_responce(entry):
+def entry_edit_get_responce(entry: Entry):
     form = EntryForm(obj=entry)
     return render_template('entries/edit.html', entry=entry, form=form)
 
 
 @entries.route('/<slug>/edit', methods=['GET', 'POST'])
 def edit(slug):
-    entry = Entry.query.filter(Entry.slug == slug).first_or_404()
+    entry = get_entry_or_404(slug)
     if request.method == 'POST':
         return entry_edit_post_responce(entry)
     elif request.method == 'GET':
         return entry_edit_get_responce(entry)
+    else:
+        assert request.method in [
+            'GET', 'POST'], "Unexpected behaviour: only get and post requests assumed"
+
+
+def entry_delete_post_responce(entry: Entry):
+    entry.status = Entry.STATUS_DELETED
+    db.session.add(entry)
+    db.session.commit()
+    return redirect(url_for('entries.index'))
+
+
+def entry_delete_get_responce(entry: Entry):
+    return render_template('entries/delete.html', entry=entry)
+
+
+@entries.route('/<slug>/delete', methods=['GET', 'POST'])
+def delete(slug):
+    entry = get_entry_or_404(slug)
+    if request.method == 'POST':
+        return entry_delete_post_responce(entry)
+    elif request.method == 'GET':
+        return entry_delete_get_responce(entry)
     else:
         assert request.method in [
             'GET', 'POST'], "Unexpected behaviour: only get and post requests assumed"

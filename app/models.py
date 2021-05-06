@@ -29,6 +29,7 @@ class Entry(db.Model):
 
     STATUS_PUBLIC = 0
     STATUS_DRAFT = 1
+    STATUS_DELETED = 2
 
     TYPE_MICRO = 0
     TYPE_MAJOR = 1

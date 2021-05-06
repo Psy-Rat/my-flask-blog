@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% from 'macros/form_control.html' import form_control %}
+
+
+{% block title %}
+    {{ entry.title }}
+{% endblock title %}
+
+{% block content_title %}
+    {{ entry.title }}
+{% endblock content_title %}
+
+{% block content %}
+    <form action="{{ url_for('entries.delete', slug=entry.slug) }}" method="post">
+        <fieldset>
+            <legend>Удалить эту запись?</legend>
+            {{ form_control( url_for('entries.detail', slug=entry.slug), submit_name="Удалить") }}
+        </fieldset>
+    </form>
+{% endblock content %}
