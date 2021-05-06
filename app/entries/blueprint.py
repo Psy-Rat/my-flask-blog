@@ -61,9 +61,8 @@ def tag_detail(slug):
     else:
         return multiple_tag_search(slug_list)
 
-# Creation controller
 
-
+# Creation model
 def create_entry_post():
     form = EntryForm(request.form)
     if form.validate():
@@ -79,9 +78,12 @@ def create_entry_post():
 def create():
     if request.method == 'POST':
         return create_entry_post()
-    else:
+    elif request.method == 'GET':
         form = EntryForm()
         return render_template('entries/create.html', form=form)
+    else:
+        assert request.method in [
+            'GET', 'POST'], "Unexpected behaviour: only get and post requests assumed"
 
 
 @entries.route('/<slug>/')
@@ -94,7 +96,33 @@ def detail(slug):
         anchors)
     return render_template('entries/detail.html', entry=entry, rendered_data=main_data, scrollspy=anch)
 
+# Edit model
+
+
+def entry_edit_post_responce(entry):
+    # obj param help to autofill form from entry by comparing attributes
+    form = EntryForm(request.form, obj=entry)
+    if form.validate():
+        entry = form.save_entry(entry)
+        db.session.add(entry)
+        db.session.commit()
+        return redirect(url_for('entries.detail', slug=entry.slug))
+    else:
+        return render_template('entries/edit.html', entry=entry, form=form)
+
+
+def entry_edit_get_responce(entry):
+    form = EntryForm(obj=entry)
+    return render_template('entries/edit.html', entry=entry, form=form)
+
 
 @entries.route('/<slug>/edit', methods=['GET', 'POST'])
 def edit(slug):
-    return pass
+    entry = Entry.query.filter(Entry.slug == slug).first_or_404()
+    if request.method == 'POST':
+        return entry_edit_post_responce(entry)
+    elif request.method == 'GET':
+        return entry_edit_get_responce(entry)
+    else:
+        assert request.method in [
+            'GET', 'POST'], "Unexpected behaviour: only get and post requests assumed"

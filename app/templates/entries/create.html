@@ -1,4 +1,7 @@
 {% extends 'base.html' %}
+{% from 'macros/form_field.html' import form_field  %}
+{% from 'macros/form_control.html' import form_control %}
+
 
 {% block title %}
     Создание новой статьи    
@@ -11,30 +14,9 @@
 {% block content %}
     <form action="{{ url_for('entries.create') }}"  method="post">
         {% for field in form %}
-        <div class="form-group row {% if field.errors %} has-error has-feedback {% endif %}">
-            {{ field.label(class='col-sm-3 control-label') }}
-            <div class="col-sm-9">
-                {% if field.errors %}
-                    {{ field(class='form-control is-invalid') }}
-                    <div class="invalid-feedback">
-                        <i class="fas fa-exclamation-triangle"></i>
-                        {% for error in field.errors %}
-                            <span class="help-block">{{ error }}</span>
-                        {% endfor %}
-                    </div>
-                {% else %}
-                    {{ field(class='form-control') }}
-                {% endif %}
-            </div>
-        </div>            
+            {{ form_field(field) }}
         {% endfor %}
-
-        <div class="form-group">
-          <div class="col-sm-offset-3 col-sm-9">
-            <button type="submit" class="btn btn-outline-primary">Создать</button>
-            <a class="btn" href="{{url_for('entries.index') }}">Отмена</a>
-          </div>
-        </div>
+        {{ form_control(url_for('entries.index'), submit_name="Создать") }}
     </form>    
 {% endblock content %}
 
