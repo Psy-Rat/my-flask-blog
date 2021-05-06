@@ -1,7 +1,13 @@
-{% for entry in object_list.items %}
+
+
+{% if object_list is defined and object_list %} 
+    {% for entry in object_list.items %}
     <p>
         <a href="{{ url_for('entries.detail', slug = entry.slug) }}">
             {{entry.title}}
         </a>
     </p>
-{% endfor %}
+    {% endfor %}
+{% else %}
+    <p>Ничего не найдено</p>
+{% endif %}

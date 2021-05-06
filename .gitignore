@@ -7,6 +7,10 @@ img/
 
 #SQLite
 *.db
+*.db-journal
+
+#Database migrations
+migrations/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

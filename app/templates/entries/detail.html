@@ -13,19 +13,30 @@
 {% endblock %}
 
 {% block content_title %}
-    {{ entry.title }}
+    {{ entry.title }} 
 {% endblock content_title %}
+
+{% block content_control %}
+    <nav class="btn-group" role="group"> 
+        <a href="{{ url_for('entries.edit', slug=entry.slug) }}" class="btn btn-secondary">
+            <i class="far fa-edit" aria-hidden="true"></i>
+        </a>
+        <a href="#" class="btn btn-secondary" >
+            <i class="far fa-trash-alt" aria-hidden="true"></i>
+        </a>
+    </nav>
+{% endblock content_control %}
 
 {% block sidebar %}
     <nav id = "tag-info" class = "container-fluid">
-    <h4>Тэги</h4>
-    {% for tag in entry.tags | sort(attribute="name") %}
-        <a class="badge badge-secondary" 
-            href="{{ url_for('entries.tag_detail', slug=tag.slug)}}">
-        {{ tag.name }}
-        </a> 
-    {% endfor %}
-    <p>Опубликовано {{ entry.created_timestamp.strftime('%m/%d/%Y')}}</p>
+        <h4>Тэги</h4>
+        {% for tag in entry.tags | sort(attribute="name") %}
+            <a class="badge badge-secondary" 
+                href="{{ url_for('entries.tag_detail', slug=tag.slug)}}">
+            {{ tag.name }}
+            </a> 
+        {% endfor %}
+        <p>Опубликовано {{ entry.created_timestamp.strftime('%m/%d/%Y')}}</p>
     </nav>
     <div id = "toc-info" class = "container-fluid">
         <h4>Оглавление</h4>
@@ -33,15 +44,6 @@
             {{ scrollspy | safe}}
         </nav>
     </div>
-    <!-- <nav class="nav list-group flex-column">
-        <h4>Тэги</h4>
-        {% for tag in entry.tags %}
-            <a class="list-group-item nav-link" 
-                href="{{ url_for('entries.tag_detail', slug=tag.slug)}}">
-                {{ tag.name }}
-            </a> 
-        {% endfor %}
-    </nav> -->
 {% endblock sidebar %}
 
 {% block content %}

@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% from 'macros/form_field.html' import form_field  %}
+{% from 'macros/form_control.html' import form_control %}
+
+
+{% block title %}
+    Создание новой статьи    
+{% endblock title %}
+
+{% block content_title %}
+    Создание новой статьи
+{% endblock content_title %}
+
+{% block content %}
+    <form action="{{ url_for('entries.create') }}"  method="post">
+        {% for field in form %}
+            {{ form_field(field) }}
+        {% endfor %}
+        {{ form_control(url_for('entries.index'), submit_name="Создать") }}
+    </form>    
+{% endblock content %}
+

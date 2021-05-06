@@ -1,0 +1,16 @@
+{% macro form_control(cancel_url, submit_name) %}
+    <div class="form-group">
+        <div class="col-sm-offset-3 col-sm-9">
+            <button type="submit" class="btn btn-outline-primary">
+                {% if submit_name %}
+                    {{ submit_name }}
+                {% else %}
+                    Ок
+                {% endif %}
+            </button>
+            <a class="btn" href="{{ cancel_url }}">
+                Отмена
+            </a>
+        </div>
+    </div>    
+{% endmacro %}

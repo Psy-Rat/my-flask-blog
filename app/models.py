@@ -1,6 +1,6 @@
 import datetime
 import re
-
+from transliterate import translit
 
 from app import db
 
@@ -9,7 +9,12 @@ from app import db
 # Models
 ############
 def slugify(s):
-    return re.sub('[^\w]+', '-', s).lower()
+    s = s.replace('-', '*')
+    trans_s = translit(s, reversed=True)
+    trans_s = trans_s.replace('-', '')
+    trans_s = trans_s.replace('*', '-')
+
+    return re.sub('[^\w]+', '-', trans_s).lower()
 
 
 entry_tags = db.Table('entry_tags',
@@ -25,11 +30,15 @@ class Entry(db.Model):
     STATUS_PUBLIC = 0
     STATUS_DRAFT = 1
 
+    TYPE_MICRO = 0
+    TYPE_MAJOR = 1
+
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100), nullable=False)
     slug = db.Column(db.String(100), nullable=False, unique=True)
     body = db.Column(db.Text)
     status = db.Column(db.SmallInteger, default=STATUS_DRAFT)
+    type = db.Column(db.SmallInteger, default=TYPE_MICRO)
 
     created_timestamp = db.Column(
         db.DateTime,

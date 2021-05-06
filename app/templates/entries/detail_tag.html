@@ -1,11 +1,26 @@
 {% extends 'base.html' %}
 
 {% block title %}
-    Записи по тегу «{{tag.name}}»
+    {% if tag is iterable and (tag is not string and tag is not mapping) %}
+        Записи по тегам « 
+        {% for elem in tag %} 
+            {{ elem.name }} 
+        {% endfor %} »
+    {% else %}
+        Записи по тегу «{{tag.name}}»
+    {% endif %}
+    
 {% endblock title %}
 
 {% block content_title %}
-    Записи по тегу «{{tag.name}}»
+    {% if tag is iterable and (tag is not string and tag is not mapping) %}
+        Записи по тегам « 
+        {% for elem in tag %} 
+            {{ elem.name }} 
+        {% endfor %} »
+    {% else %}
+        Записи по тегу «{{tag.name}}»
+    {% endif %}
 {% endblock content_title %}
 
 {% block content %}
