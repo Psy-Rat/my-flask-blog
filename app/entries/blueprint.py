@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, redirect, url_for, request
+from flask import Blueprint, flash, render_template, redirect, url_for, request
 from helpers import entry_list_search, markdown, get_anchors, parse_anchors_as_bootstrap, get_entry_or_404
 from models import Entry, Tag
 from collections import namedtuple
@@ -68,6 +68,7 @@ def create_entry_post():
         entry = form.save_entry(Entry())
         db.session.add(entry)
         db.session.commit()
+        flash(f'Статья «{entry.title} создана»', 'success')
         return redirect(url_for('entries.detail', slug=entry.slug))
     else:
         return render_template('entries/create.html', form=form)
@@ -105,6 +106,7 @@ def entry_edit_post_responce(entry: Entry):
         entry = form.save_entry(entry)
         db.session.add(entry)
         db.session.commit()
+        flash(f'Изменения в статье «{entry.title}» сохранены', 'success')
         return redirect(url_for('entries.detail', slug=entry.slug))
     else:
         return render_template('entries/edit.html', entry=entry, form=form)
@@ -131,6 +133,7 @@ def entry_delete_post_responce(entry: Entry):
     entry.status = Entry.STATUS_DELETED
     db.session.add(entry)
     db.session.commit()
+    flash(f'Статье «{entry.title}» присвоен статус удаленные', 'success')
     return redirect(url_for('entries.index'))
 
 

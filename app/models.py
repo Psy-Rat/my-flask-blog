@@ -1,20 +1,23 @@
 import datetime
 import re
 from transliterate import translit
-
+import string
 from app import db
 
 
 ############
 # Models
 ############
-def slugify(s):
-    s = s.replace('-', '*')
-    trans_s = translit(s, reversed=True)
-    trans_s = trans_s.replace('-', '')
-    trans_s = trans_s.replace('*', '-')
+def is_latin(s):
+    return min([char in string.ascii_letters for char in re.sub('[^\w]+', '', s)])
 
-    return re.sub('[^\w]+', '-', trans_s).lower()
+
+def slugify(s):
+    if not is_latin(s):
+        s = translit(s, reversed=True)
+        s = s.replace('\'', '')
+
+    return re.sub('[^\w]+', '-', s).lower()
 
 
 entry_tags = db.Table('entry_tags',
