@@ -18,5 +18,6 @@
 <li>- [x] anchors on headers   </li>
 <li>- [x] search   </li>
 <li>- [ ] Elasticsearch   </li>
+<li>- [ ] Redis-based live search w/ Ajax </li>
 <!-- <li>- [ ]  </li> -->
 </ul>

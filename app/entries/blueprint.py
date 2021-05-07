@@ -103,6 +103,11 @@ def entry_edit_post_responce(entry: Entry):
     # obj param help to autofill form from entry by comparing attributes
     form = EntryForm(request.form, obj=entry)
     if form.validate():
+        tags = form.save_new_tags()
+        for tag in tags:
+            db.session.add(tag)
+        db.session.commit()
+
         entry = form.save_entry(entry)
         db.session.add(entry)
         db.session.commit()

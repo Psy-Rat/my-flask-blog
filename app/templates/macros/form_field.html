@@ -13,6 +13,10 @@
             {% else %}
                 {{ field(class='form-control', **kwargs) }}
             {% endif %}
+            {% if field.description %}
+                <span class="help-block">{{ field.description | safe }}</span>
+            {% endif %}
         </div>
     </div>            
 {% endmacro %}
+
