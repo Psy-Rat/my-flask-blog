@@ -15,6 +15,11 @@ import re
 from models import Entry
 
 
+def get_entry_or_404(slug):
+    valid_statuses = (Entry.STATUS_DRAFT, Entry.STATUS_PUBLIC)
+    return Entry.query.filter((Entry.slug == slug) & (Entry.status.in_(valid_statuses))).first_or_404()
+
+
 def render_paginated(template_name, query, paginate_by=10, **context):
     '''
         Paginate query by flask. Returns rendered template with items after pagination.
@@ -33,6 +38,20 @@ def render_paginated(template_name, query, paginate_by=10, **context):
         template_name,
         object_list=object_list,
         **context)
+
+
+def entry_list_search(template, query, **context):
+    search = request.args.get('q')
+    valid_statuses = (Entry.STATUS_DRAFT, Entry.STATUS_PUBLIC)
+    query = query.filter(Entry.status.in_(valid_statuses))
+
+    if search:
+        query = query.filter(
+            (Entry.body.contains(search)) | (Entry.title.contains(search)))
+    # else:
+    #     query = query.filter(
+    #         (Entry.status == Entry.STATUS_PUBLIC))
+    return render_paginated(template, query, **context)
 
 
 class HighlighterRenderer(m.HtmlRenderer):
@@ -245,14 +264,3 @@ def get_anchors(text):
 
 def parse_anchors_as_bootstrap(anchors):
     return had_parser.parse(anchors)
-
-
-def entry_list_search(template, query, **context):
-    search = request.args.get('q')
-    if search:
-        query = query.filter(
-            (Entry.body.contains(search)) | (Entry.title.contains(search)) | (Entry.status == Entry.STATUS_PUBLIC))
-    else:
-        query = query.filter(
-            (Entry.status == Entry.STATUS_PUBLIC))
-    return render_paginated(template, query, **context)
