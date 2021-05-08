@@ -13,6 +13,7 @@ from copy import deepcopy
 import re
 
 from models import Entry
+from models import slugify as latin_slugify
 
 
 def get_entry_or_404(slug):
@@ -117,7 +118,7 @@ class HeaderAnchorData():
         self.slug = self.slugify(content, unique_set)
 
     def slugify(self, text, unique_set=None):
-        slug = re.sub('[^\w]+', '-', text).lower()
+        slug = latin_slugify(text)
         if unique_set is None:
             return slug
         else:
