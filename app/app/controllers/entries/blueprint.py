@@ -1,9 +1,12 @@
 from flask import Blueprint, flash, render_template, redirect, url_for, request
-from helpers import entry_list_search, markdown, get_anchors, parse_anchors_as_bootstrap, get_entry_or_404
-from models import Entry, Tag
 from collections import namedtuple
-from entries.forms import EntryForm
-from app import db
+
+from .forms import EntryForm
+from ...helpers import entry_list_search, markdown, get_anchors, parse_anchors_as_bootstrap, get_entry_or_404
+from ...models import Entry, Tag
+
+
+from ...app import db
 
 DummyTag = namedtuple("DummyTag", ["name"])
 

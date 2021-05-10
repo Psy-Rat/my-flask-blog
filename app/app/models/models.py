@@ -2,7 +2,7 @@ import datetime
 import re
 from transliterate import translit
 import string
-from app import db
+from ..app import db
 
 
 ############
