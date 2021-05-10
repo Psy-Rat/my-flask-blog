@@ -1,2 +1,2 @@
-from .models import Entry, Tag
-from .models import slugify
+from .entity_model import Entry
+from .tag_model import Tag

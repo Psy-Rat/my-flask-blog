@@ -13,7 +13,7 @@ from copy import deepcopy
 import re
 
 from ..models import Entry
-from ..models import slugify as latin_slugify
+from ..utils import slugify as latin_slugify
 
 
 def get_entry_or_404(slug):

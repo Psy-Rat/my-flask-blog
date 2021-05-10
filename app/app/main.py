@@ -1,5 +1,5 @@
 from .app import app, db  # import our Flask app
-from .models import models
+from .models import Tag, Entry
 
 from .controllers import origin
 from .controllers.entries import entries

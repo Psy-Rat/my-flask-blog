@@ -1,30 +1,8 @@
 import datetime
-import re
-from transliterate import translit
-import string
 from ..app import db
+from ..utils import slugify
 
-
-############
-# Models
-############
-def is_latin(s):
-    return min([char in string.ascii_letters for char in re.sub('[^\w]+', '', s)])
-
-
-def slugify(s):
-    if not is_latin(s):
-        s = translit(s, reversed=True)
-        s = s.replace('\'', '')
-
-    return re.sub('[^\w]+', '-', s).lower()
-
-
-entry_tags = db.Table('entry_tags',
-                      db.Column('tag_id', db.Integer, db.ForeignKey('tag.id')),
-                      db.Column('entry_id', db.Integer,
-                                db.ForeignKey('entry.id'))
-                      )
+from .relationship_tables import entry_tags
 
 
 class Entry(db.Model):
@@ -73,17 +51,3 @@ class Entry(db.Model):
 
     def __repr__(self):
         return f'<Entry: {self.title}>'
-
-
-class Tag(db.Model):
-    __tablename__ = 'tag'
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(64), nullable=False)
-    slug = db.Column(db.String(64), nullable=False, unique=True)
-
-    def __init__(self, *args, **kwargs):
-        super(Tag, self).__init__(*args, **kwargs)
-        self.slug = slugify(self.name)
-
-    def __repr__(self):
-        return f'<Tag {self.name}>'
