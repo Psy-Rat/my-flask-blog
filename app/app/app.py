@@ -4,13 +4,14 @@ from flask_script import Manager
 from flask_sqlalchemy import SQLAlchemy
 
 
-from config import Configuration
+from .config import DebugConfig
 
 ############
 # App
 ############
 app = Flask(__name__)
-app.config.from_object(Configuration)
+
+app.config.from_object(DebugConfig)  # ToDo
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 

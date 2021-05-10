@@ -5,6 +5,9 @@ img/
 #testing stuff
 *.test.txt
 
+#VSCode
+.vscode/
+
 #SQLite
 *.db
 *.db-journal
