@@ -16,11 +16,6 @@ from ..models import Entry
 from ..utils import slugify as latin_slugify
 
 
-def get_entry_or_404(slug):
-    valid_statuses = (Entry.STATUS_DRAFT, Entry.STATUS_PUBLIC)
-    return Entry.query.filter((Entry.slug == slug) & (Entry.status.in_(valid_statuses))).first_or_404()
-
-
 def render_paginated(template_name, query, paginate_by=10, **context):
     '''
         Paginate query by flask. Returns rendered template with items after pagination.

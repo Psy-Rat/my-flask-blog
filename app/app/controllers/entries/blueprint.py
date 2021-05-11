@@ -2,9 +2,10 @@ from flask import Blueprint, flash, render_template, redirect, url_for, request
 from collections import namedtuple
 
 from .forms import EntryForm
-from ...helpers import entry_list_search, markdown, get_anchors, parse_anchors_as_bootstrap, get_entry_or_404
+from ...helpers import entry_list_search, markdown, get_anchors, parse_anchors_as_bootstrap
 from ...models import Entry, Tag
 
+from ...services.entry import EntryService
 
 from ...app import db
 
@@ -19,7 +20,7 @@ entries = Blueprint(
 
 @entries.route('/')
 def index():
-    entries = Entry.query.order_by(Entry.created_timestamp.desc())
+    entries = EntryService.get_entries_ordered_by_date()
     return entry_list_search('entries/index.html', entries)
 
 
@@ -91,7 +92,7 @@ def create():
 
 @entries.route('/<slug>/')
 def detail(slug):
-    entry = get_entry_or_404(slug)
+    entry = EntryService.get_entry_or_404(slug)
     anchors = get_anchors(entry.body)
     main_data = markdown(
         entry.body, anchors, math=True, fenced_code=True)
@@ -127,7 +128,7 @@ def entry_edit_get_responce(entry: Entry):
 
 @entries.route('/<slug>/edit', methods=['GET', 'POST'])
 def edit(slug):
-    entry = get_entry_or_404(slug)
+    entry = EntryService.get_entry_or_404(slug)
     if request.method == 'POST':
         return entry_edit_post_responce(entry)
     elif request.method == 'GET':
@@ -151,7 +152,7 @@ def entry_delete_get_responce(entry: Entry):
 
 @entries.route('/<slug>/delete', methods=['GET', 'POST'])
 def delete(slug):
-    entry = get_entry_or_404(slug)
+    entry = EntryService.get_entry_or_404(slug)
     if request.method == 'POST':
         return entry_delete_post_responce(entry)
     elif request.method == 'GET':
