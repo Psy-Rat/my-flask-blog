@@ -1,4 +1,4 @@
-from app import app
+from ..app import app
 from flask import redirect, request, abort, render_template, url_for
 
 

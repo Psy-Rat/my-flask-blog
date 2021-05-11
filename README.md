@@ -5,8 +5,9 @@
 ## ToDo
 
 <ul>
-<li>- [ ] helpers → controllers</li>
-<li>- [ ] parse_anchors_as_bootstrap et al →  ScrollspyRenderer</li>
+<li>- [ ] Разделить MVC контекст </li>
+<li>- [ ] Добавить Swagger </li>
+<li>- [ ] Добавить тесты на unittest и selenium через nose2 </li>
 <li>- [ ] admin panel</li>
 <li>- [ ] users </li>
 <li>- [ ] user auth </li>

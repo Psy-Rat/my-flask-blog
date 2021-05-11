@@ -13,12 +13,7 @@ from copy import deepcopy
 import re
 
 from ..models import Entry
-from ..models import slugify as latin_slugify
-
-
-def get_entry_or_404(slug):
-    valid_statuses = (Entry.STATUS_DRAFT, Entry.STATUS_PUBLIC)
-    return Entry.query.filter((Entry.slug == slug) & (Entry.status.in_(valid_statuses))).first_or_404()
+from ..utils import slugify as latin_slugify
 
 
 def render_paginated(template_name, query, paginate_by=10, **context):

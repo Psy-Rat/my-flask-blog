@@ -2,7 +2,8 @@ import wtforms
 from wtforms.validators import DataRequired
 from collections import namedtuple
 
-from ...models import Entry, Tag, slugify
+from ...models import Entry, Tag
+from ...utils import slugify
 
 
 DummyTag = namedtuple("DummyTag", ['name', 'slug'])
