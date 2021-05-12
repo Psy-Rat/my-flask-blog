@@ -4,7 +4,7 @@ from collections import namedtuple
 
 from ...models import Entry, Tag
 from ...utils import slugify
-
+from ...app import db
 
 DummyTag = namedtuple("DummyTag", ['name', 'slug'])
 
@@ -68,11 +68,21 @@ class EntryForm(wtforms.Form):
         ),
         coerce=int)
 
-    def save_entry(self, entry):
+    def save_entry(self):
+        entry = Entry()
+        entry = self.modify_entry(entry)
+        return entry
+
+    def modify_entry(self, entry):
         self.populate_obj(entry)
         entry.generate_slug()
+        db.session.add(entry)
+        db.session.commit()
         return entry
 
     def save_new_tags(self):
         new_tags = self.tags.get_new_tags()
+        for tag in new_tags:
+            db.session.add(tag)
+        db.session.commit()
         return new_tags

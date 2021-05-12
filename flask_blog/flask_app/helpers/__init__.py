@@ -1,1 +1,2 @@
-from .helpers import entry_list_search, markdown, get_anchors, parse_anchors_as_bootstrap
+from .helpers import markdown, get_anchors, parse_anchors_as_bootstrap
+from .entry_helpers import render_paginated

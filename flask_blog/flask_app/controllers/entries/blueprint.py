@@ -2,10 +2,10 @@ from flask import Blueprint, flash, render_template, redirect, url_for, request
 from collections import namedtuple
 
 from .forms import EntryForm
-from ...helpers import entry_list_search, markdown, get_anchors, parse_anchors_as_bootstrap
-from ...models import Entry, Tag
+from ...helpers import markdown, get_anchors, parse_anchors_as_bootstrap
+from ...helpers import render_paginated
 
-from ...services.entry import EntryService
+from ...services.entry import EntryService, TagService
 
 from ...app import db
 
@@ -21,59 +21,55 @@ entries = Blueprint(
 @entries.route('/')
 def index():
     entries = EntryService.get_entries_ordered_by_date()
-    return entry_list_search('entries/index.html', entries)
+    return render_paginated('entries/index.html', entries)
 
 
 @entries.route('/tags/')
 def tag_index():
-    tags = Tag.query.order_by(Tag.name)
-    return entry_list_search('entries/index_tag.html', tags)
+    tags = TagService.get_tag_list_ordered_by_name()
+    return render_paginated('entries/index_tag.html', tags)
 
 
 def single_tag_search(slug):
-    tag = Tag.query.filter(Tag.slug == slug).first_or_404()
-    entries = tag.entries.order_by(Entry.created_timestamp.desc())
-    return entry_list_search('entries/detail_tag.html', entries, tag=tag)
+    tag = TagService.get_tag_by_slug(slug)
+    entries = EntryService.get_entries_by_tag(tag)
+    return render_paginated('entries/detail_tag.html', entries, tag=tag)
 
 
 def multiple_tag_search(slug_list):
-    ''' ToDo: rewrite completely
+    ''' 
     '''
-    query_filter = Tag.slug == ""
-    f_empty = False
-    for slug in slug_list:
-        query_filter |= Tag.slug == slug
-        if Tag.query.filter(Tag.slug == slug).count() == 0:
-            return render_template('entries/detail_tag.html',
-                                   object_list=None,
-                                   tag=[DummyTag(name=slug) for slug in slug_list])
+    tags = TagService.get_tags_by_slug_multiple(slug_list)
+    if tags is None:
+        entries = None
+        tags = [DummyTag(name=slug) for slug in slug_list]
+    else:
+        entries = EntryService.get_entries_by_tags(tags)
 
-    tags = Tag.query.filter(query_filter).all()
-    q_entries = [tag.entries for tag in tags]
-    entries = q_entries[0].intersect(
-        *q_entries[1:]).order_by(Entry.created_timestamp.desc())
-
-    return entry_list_search('entries/detail_tag.html', entries, tag=tags)
+    return render_paginated('entries/detail_tag.html',
+                            entries,
+                            tag=tags)
 
 
 @entries.route('/tags/<slug>/')
 def tag_detail(slug):
-    slug_list = slug.split('+')
-    if len(slug_list) == 1:
-        return single_tag_search(slug)
+    if '+' in slug:
+        slug_list = slug.split('+')
     else:
-        return multiple_tag_search(slug_list)
+        slug_list = [slug]
+    # if len(slug_list) == 1:
+        # return multiple_tag_search(slug)
+    # else:
+    return multiple_tag_search(slug_list)
 
 
 # Creation model
 def create_entry_post():
     form = EntryForm(request.form)
     if form.validate():
-        entry = form.save_entry(Entry())
-        db.session.add(entry)
-        db.session.commit()
-        flash(f'Статья «{entry.title} создана»', 'success')
-        return redirect(url_for('entries.detail', slug=entry.slug))
+        result = form.save_entry()
+        flash(f'Статья «{result.title}» создана', 'success')
+        return redirect(url_for('entries.detail', slug=result.slug))
     else:
         return render_template('entries/create.html', form=form)
 
@@ -92,7 +88,7 @@ def create():
 
 @entries.route('/<slug>/')
 def detail(slug):
-    entry = EntryService.get_entry_or_404(slug)
+    entry = EntryService.get_entry_by_slug(slug)
     anchors = get_anchors(entry.body)
     main_data = markdown(
         entry.body, anchors, math=True, fenced_code=True)
@@ -103,60 +99,54 @@ def detail(slug):
 # Edit model
 
 
-def entry_edit_post_responce(entry: Entry):
+def entry_edit_post_responce(slug: str):
     # obj param help to autofill form from entry by comparing attributes
+    entry = EntryService.get_entry_by_slug(slug)
     form = EntryForm(request.form, obj=entry)
     if form.validate():
         tags = form.save_new_tags()
-        for tag in tags:
-            db.session.add(tag)
-        db.session.commit()
-
-        entry = form.save_entry(entry)
-        db.session.add(entry)
-        db.session.commit()
+        entry = form.modify_entry(entry)
         flash(f'Изменения в статье «{entry.title}» сохранены', 'success')
         return redirect(url_for('entries.detail', slug=entry.slug))
     else:
         return render_template('entries/edit.html', entry=entry, form=form)
 
 
-def entry_edit_get_responce(entry: Entry):
+def entry_edit_get_responce(slug: str):
+    entry = EntryService.get_entry_by_slug(slug)
     form = EntryForm(obj=entry)
     return render_template('entries/edit.html', entry=entry, form=form)
 
 
 @entries.route('/<slug>/edit', methods=['GET', 'POST'])
 def edit(slug):
-    entry = EntryService.get_entry_or_404(slug)
     if request.method == 'POST':
-        return entry_edit_post_responce(entry)
+        return entry_edit_post_responce(slug)
     elif request.method == 'GET':
-        return entry_edit_get_responce(entry)
+        return entry_edit_get_responce(slug)
     else:
         assert request.method in [
             'GET', 'POST'], "Unexpected behaviour: only get and post requests assumed"
 
 
-def entry_delete_post_responce(entry: Entry):
-    entry.status = Entry.STATUS_DELETED
-    db.session.add(entry)
-    db.session.commit()
+def entry_delete_post_responce(slug: str):
+    entry = EntryService.get_entry_by_slug(slug)
+    entry = EntryService.delete_entry(entry)
     flash(f'Статье «{entry.title}» присвоен статус удаленные', 'success')
     return redirect(url_for('entries.index'))
 
 
-def entry_delete_get_responce(entry: Entry):
+def entry_delete_get_responce(slug: str):
+    entry = EntryService.get_entry_by_slug(slug)
     return render_template('entries/delete.html', entry=entry)
 
 
 @entries.route('/<slug>/delete', methods=['GET', 'POST'])
 def delete(slug):
-    entry = EntryService.get_entry_or_404(slug)
     if request.method == 'POST':
-        return entry_delete_post_responce(entry)
+        return entry_delete_post_responce(slug)
     elif request.method == 'GET':
-        return entry_delete_get_responce(entry)
+        return entry_delete_get_responce(slug)
     else:
         assert request.method in [
             'GET', 'POST'], "Unexpected behaviour: only get and post requests assumed"
