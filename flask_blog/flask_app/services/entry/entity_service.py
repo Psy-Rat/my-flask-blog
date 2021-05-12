@@ -3,10 +3,21 @@ from sqlalchemy.orm.query import Query
 from ...models import Entry, Tag
 from wtforms import Form
 from ...app import db
+# from dataclasses import dataclass
+
+
+# @dataclass
+# class EntryData:
+#     title : str
+#     slug : str
+#     body : str
+#     status = int
+#     type = int
 
 
 class EntryService:
     VALID_STATUSES = (Entry.STATUS_DRAFT, Entry.STATUS_PUBLIC)
+    VALID_TYPES = (Entry.TYPE_MICRO, Entry.TYPE_MAJOR)
 
     @classmethod
     def get_entry_by_slug(cls, slug: str) -> Entry:
@@ -58,6 +69,17 @@ class EntryService:
     @classmethod
     def delete_entry(cls, entry):
         entry.status = Entry.STATUS_DELETED
+        db.session.add(entry)
+        db.session.commit()
+        return entry
+
+    @classmethod
+    def get_new_entry(cls):
+        return Entry()
+
+    @classmethod
+    def save_entry(entry: Entry):
+        entry.generate_slug()
         db.session.add(entry)
         db.session.commit()
         return entry

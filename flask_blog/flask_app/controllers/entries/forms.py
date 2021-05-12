@@ -2,7 +2,8 @@ import wtforms
 from wtforms.validators import DataRequired
 from collections import namedtuple
 
-from ...models import Entry, Tag
+from ...models import Tag
+from ...services import EntryService
 from ...utils import slugify
 from ...app import db
 
@@ -55,29 +56,27 @@ class EntryForm(wtforms.Form):
     status = wtforms.SelectField(
         'Статус',
         choices=(
-            (Entry.STATUS_DRAFT,  'Черновое'),
-            (Entry.STATUS_PUBLIC, 'Обобществлённое')
+            (EntryService.VALID_STATUSES[0],  'Черновое'),
+            (EntryService.VALID_STATUSES[1], 'Обобществлённое')
         ),
         coerce=int)
 
     type = wtforms.SelectField(
         'Тип',
         choices=(
-            (Entry.TYPE_MICRO,  'Твит'),
-            (Entry.TYPE_MAJOR,  'Пост')
+            (EntryService.VALID_TYPES[0],  'Твит'),
+            (EntryService.VALID_TYPES[1],  'Пост')
         ),
         coerce=int)
 
     def save_entry(self):
-        entry = Entry()
+        entry = EntryService.get_new_entry()
         entry = self.modify_entry(entry)
         return entry
 
     def modify_entry(self, entry):
         self.populate_obj(entry)
-        entry.generate_slug()
-        db.session.add(entry)
-        db.session.commit()
+        entry = EntryService.save_entry(entry)
         return entry
 
     def save_new_tags(self):
