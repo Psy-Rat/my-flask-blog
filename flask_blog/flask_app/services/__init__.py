@@ -1,1 +1,1 @@
-from .entry import EntryService
+from .entry import EntryService, TagService
