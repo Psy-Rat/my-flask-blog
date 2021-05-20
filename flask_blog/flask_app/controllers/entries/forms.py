@@ -2,12 +2,7 @@ import wtforms
 from wtforms.validators import DataRequired
 from collections import namedtuple
 
-from ...models import Tag
-from ...services import EntryService
-from ...utils import slugify
-from ...app import db
-
-DummyTag = namedtuple("DummyTag", ['name', 'slug'])
+from ...services import EntryService, TagService
 
 
 class TagField(wtforms.StringField):
@@ -19,21 +14,8 @@ class TagField(wtforms.StringField):
     def get_tags_from_string(self, tag_string):
         raw = tag_string.split(';')
         tag_names = [name.strip() for name in raw if name.strip()]
-        tag_slugs = [slugify(name) for name in tag_names]
-
-        slug_names = [DummyTag(*elem)
-                      for elem in zip(tag_names, tag_slugs)]
-
-        existing_tags = Tag.query.filter(
-            Tag.slug.in_(tag_slugs)).all()
-        existing_slugs = [tag.slug for tag in existing_tags]
-
-        new_tags = filter(
-            lambda x: x.slug not in existing_slugs, slug_names)
-
-        new_tags = [Tag(name=dummy_tag.name)
-                    for dummy_tag in new_tags]
-        return list(existing_tags), new_tags
+        tags = TagService.create_tags_from_name_list(tag_names)
+        return [*tags]
 
     def process_formdata(self, valuelist):
         if valuelist:
@@ -56,7 +38,7 @@ class EntryForm(wtforms.Form):
     status = wtforms.SelectField(
         'Статус',
         choices=(
-            (EntryService.VALID_STATUSES[0],  'Черновое'),
+            (EntryService.VALID_STATUSES[0], 'Черновое'),
             (EntryService.VALID_STATUSES[1], 'Обобществлённое')
         ),
         coerce=int)
@@ -81,7 +63,5 @@ class EntryForm(wtforms.Form):
 
     def save_new_tags(self):
         new_tags = self.tags.get_new_tags()
-        for tag in new_tags:
-            db.session.add(tag)
-        db.session.commit()
+        TagService.save_tag_list(new_tags)
         return new_tags
